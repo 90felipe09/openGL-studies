@@ -1,0 +1,40 @@
+14-08-2020
+
+Started figuring out how to properly compile this project with a makefile. Now i know why tutorials prefer using visual studio community.
+
+First of all, i know my main.cpp calls GLFW/glfw3.h. So i just need to compile it with it.
+
+INCLUDES = -Isrc/include
+g++ -std=c++11 -c src/main.cpp $(INCLUDES) -o ./build/main.o
+
+By adding it i'm using a G++ compiler with standard version 11. I'll compile my main.cpp in the build folder with the specification of headers includes for it to find glfw3.h;
+
+It works. I do can generate main.o. But i know that i've not linked it along the static librari libglfw3.a.
+
+It looks like that i'll have to specify it.
+
+Well. There are a load of references to make. So i'll use cMake as a stack overflow entry is suggesting...
+
+After that, got some errors such as couldn't find some libraries. There's a suggestion to install libgl1-mesa-dev. But do i really need it?
+I decided that i don't to do it. I don't CMake, let's go back with Makefile.
+
+Ok recompose yourself.
+
+First, i will specify where to my compiler search for lib files:
+
+LIBRARIES = -L./src/lib
+
+And then, one by one, i defined the ones that were required:
+
+LINKER_LIBS := -lglfw3 -ldl -lm -lX11 -lpthread
+
+So finally:
+
+build/GameEngine: build/main.o
+	g++ -o build/GameEngine $(LIBRARIES) build/main.o $(LINKER_LIBS)
+
+And bang. It works.
+
+Lol! I did it! I've created the build system for linux, i've compiled from source an open source project and generated my hello world with static linking.
+
+Well it's a good setup. Time for a git commit in setup.

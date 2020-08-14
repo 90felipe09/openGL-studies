@@ -1,0 +1,52 @@
+13-08-2020
+
+Decided to learn more about openGL and developing a game engine from scratch with C/C++. Inspired and guided by the youtube channel TheCherno (https://www.youtube.com/channel/UCQ-W1KE9EYfdxhL6S4twUNw) and this open source book (https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwiqn5Gkz5nrAhWlJLkGHaLKAQMQFjAAegQIARAB&url=https%3A%2F%2Fraw.githubusercontent.com%2FOverv%2FOpen.GL%2Fmaster%2Febook%2FModern%2520OpenGL%2520Guide.pdf&usg=AOvVaw1XVSPxoxuaZnDfP4eECnal), i'll approach this project as an opportunity to improve my C/C++ skills. Since as i've noticed, the more that i've approached the market demands with ready-to-market technologies like JS and python, maybe i'm getting too lazy and not pushing forward the original challenges that i've proposed to myself in the beginning of this journey after all. I know that the final product is of no use, but it's not about the end. It's a path that i knew that one time I had to traverse. Well, here we are.
+
+Maintaining a log for every day that i propose to progress sounds like a good idea. I'll follow along with this.
+
+I've decided to follow theCherno choice of using GLFW, but i'm not sticking along this project with the visual studio community. I'm following it with a simple text editor as VS Code in my Ubuntu and try making this project with tools such as Makefile and manually compiling libraries from source, since it's my first time doing it. So i consider a victory achieving this. 4 years since the start of my journey and i still haven't compiled an open source library from source. For a time i thought that i've been a spoiled programmer for this, but the more that i've been doing some different internships and talking with other friends of mine, at any time none of them or the enterprises that i've been required such experience. It relieved me for a moment from an impostor syndrome, but then i noticed that since nobody asked that from me till now, there's no such perspective of any one in the market requesting to do so. So this thought reinforced my initial approach with this project: I'm not doing this because it's useful, but because I want to learn something from it. But learn this for what then? Sounds like learning latim. Well, lucky of me not being such a rational person. I never compromised myself with things because it was useful all the time. Sometimes, there is some irrational desire to do something interesting (for who? for what? nah, for me, and that's ok).
+
+Ok. Let's start. First of all i've downloaded the source code of glfw from their official website: https://www.glfw.org/download.html
+So now what... how do i do that....
+
+Ok, programmers use README.md, so i'm reading the README.md inside the glfw download... it redirected me to a docs site and it looks like that they use this thing CMake. Ok... CMake is not Make it looks like. What is the difference?
+
+The difference of CMake to Make:
+Ah! I've got it, thanks Angew is no longer proud of SO and lulian Onofrei from this stackoverflow entry: https://stackoverflow.com/questions/25789644/difference-between-using-makefile-and-cmake-to-compile-the-code/25790020
+
+As they said: Makefile is just a buildystem. Something that guides the steps to build a project. CMake generates buildsystems such as makefiles. So if you're interested in making a project cross-platforms (generate a visual studio solution for a windows developer or a makefile system for GNU developers), so CMake is the way to go. So it looks like that the guidelines to generate these build systems are specified in this CMakeLists.txt file that there is inside of this folder. Interesting...
+
+Hmmm... the docs just guides me to simply execute cmake in the working directory of the glfw. But how does this magic thingy CMake knows that i'm using linux and not windows...? Aha! Some search in their docs and it looks like that it already does this automatically. I don't need to specify the OS! Neat! Programmers are such clever creatures.
+
+Ok, ok, let's move on... create a new directory called build inside this folder, move inside of it and execute cmake and... BANG! Of course that i don't have cmake installed. hehe.
+
+Ok... Errors. Reading the log error i see that i've got some linker errors because of some pthread things from my ld builtin application. Ok, how do i get it right?
+
+After some google reasearch and reading the CMakeError.log, it looks like that my MINGW has the library for exploring threads (pthreads), but not the one responsible for linking these things (lpthreads). Some guys in ubuntu forum reported the same issue... some commens points to installing a build-essentials app. Ok... let's give it a try. No... it's not that. I already have those... Oh! i see... it looks like that there's a typo here. CMake is trying to call for -lpthreads when it should be calling for -lpthread (without the last s)... wait a minute. It looks like that i'm following a fake hint... doxygen not installed? hmmm... let's try installing it. It looks like doxygen is a docs generator. Neat. Well... let's try again then.
+
+Nope, now the problem is with X11. Abreviation for Xorg version 11. It looks like the lib for window app interface creation for UNIX systems. So i don't have this one installed yet. So let's install it. apt-get install libx11-dev. Yes! Now i've got another problem!
+
+RandR headers not found; install libxrandr. ok. It's an extension for resizing windows for xorg. Ok. lets go. libxrandr-dev.
+
+Xinerama not found... install libxinerama-dev.
+now libxcursor-dev.
+now libxi-dev
+
+lol! I did it? Yay! I did it!
+Ok. I haven't builded glfw yet... i just generated the buildsystem to start building it. I see inside the build folder there are some makefiles... let's try evoking a lazy "make" to see if it works. hoho! percentages rolling, console going crazy... yes! it's the way.
+
+Ok, ok. I did it. My first open source compiled from source. Now what? I know that i want to use static linking. So i want to find the static library that i've compiled. I'm reading right now a tutorial about linkers from https://www.lurklurk.org/linkers/linkers.html. And now i've learned something: initially i thought that static libraries would all be called with a .lib extension. It looks like that on UNIX systems, static libraries has .a extensions. Ok. So now i will follow the following procedure:
+
+- I created a lib folder for my project where i'll store my static and dynamic libraries for the project. So i'll insert a copy of my compiled from source libglfw3.a since it's the only .a file that i found.
+
+- I created an include folder with a sub directory GLFW to insert the header files of GLFW.
+
+Now i suppose that i dont need the glfw-3.3.2 anymore so i will remove it from this working repository.
+
+Now i will test it with the most simple hello world to see if everthing runs correctly. I created an app folder where i'll insert the entrypoint main.cpp.
+
+Ok... it's not going to be that easy. I've found out that there is a chain of dependencies beyond the static library compiled to include in the project such as the glad, gl, xorg etc.
+
+Well. It's 01:44 AM so i think that's it and i'll call it a day.
+
+I know that i'll have to figure out what to do in my makefile and how to organize it to make the hello world work.
