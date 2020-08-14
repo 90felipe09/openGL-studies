@@ -1,4 +1,4 @@
-LINKER_LIBS := -lglfw3 -ldl -lm -lX11 -lpthread
+LINKER_LIBS := -lglfw3 -lGLEW -ldl -lm -lX11 -lpthread -lGL
 INCLUDES = -Isrc/include/
 LIBRARIES = -L./src/lib
 
