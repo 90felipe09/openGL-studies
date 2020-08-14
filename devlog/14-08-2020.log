@@ -38,3 +38,20 @@ And bang. It works.
 Lol! I did it! I've created the build system for linux, i've compiled from source an open source project and generated my hello world with static linking.
 
 Well it's a good setup. Time for a git commit in setup.
+
+Now the next step is to build and include GLEW. It's an OS lib that dinamically links my project with the function pointers implementations from my graphic card drivers. So in order to effectively draw things and make it work, i'll need this thing GLFW is just a lib that facilitates API access by providing helper functions for creating windows, resizing, receiving and transmitting inputs and so on. As i can tell, it's just a container context that my gpu will work on.
+
+I've downloaded glew from this site (http://glew.sourceforge.net/). Well. There's a cute makefile here. I'll execute.
+Ok, errors because it didn't find some libs... ah! in their docs they recommend installing these deps:
+sudo apt-get install libXmu-dev libXi-dev libgl-dev dos2unix git wget
+got some errors from libXmu-dev libXi-dev because it couldn't find. So i removed then and i'll try to build just with those...
+
+Ok... it worked. But it's because i think those libXmu are already installed.
+
+Now i added the libGLEW.a corresponding to this build inside my lib folder and i will copy paste the include content to my include folder.
+
+Now for today i'll setup this at least to the point that i create a window as it's described on page 18.
+
+Forget it. Followed TheCherno. Now I rendered a triangle on my screen! Yes! Hello world accomplished! Oh my god i'm so proud of myself!
+
+That's it for today. Tomorrow i think about doing another commit.
