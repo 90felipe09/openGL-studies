@@ -9,3 +9,4 @@ build/main.o: src/main.cpp
 
 clean:
 	rm -rf build/*.o
+	rm -rf build/GameEngine

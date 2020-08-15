@@ -6,3 +6,25 @@ Basically i'm separating my shaders inside a specific folder and files with shad
 Followed theCherno again, but i've noticed something different. Well, apparently the version supported by my installed specs is the GLES 3.1. It is a little bit different because i have to specify the desired precision for float values in my shaders. Besides that, i can modify the color of the triangle in my screen.
 
 my main.cpp is increasing and i think that i can separate some behaviour in different files, but that is an issue for another day.
+
+I gave a break at 10AM and now i'm coming back to follow up the usage of Index Buffers from theCherno. It's 20:08. I think that's what i can do for today because after dinner me and my family are watching death note. They're liking it. It's cool.
+
+The idea now is rendering a square with two triangles. Knowing that we are drawing triangles to form continuous shapes, we are informing 2 redundant vertices. Now, in order to reuse existent vertices to use less memory (because an actual prop or character has a lot of vertices and faces and we are interested in saving memory for the gpu), we provide an index buffer along a vertexBuffer in order to help the renderer to know the indices of each vertex from vertexBuffer.
+
+It looks something like this:
+vertexBuffer:
+3(-0.5, 0.5) ------ 2(0.5, 0.5)
+|                           |
+|                           |
+|                           |
+|                           |
+|                           |
+0(-0.5, -0.5) ------ 1(0.5, -0.5)
+
+indexBuffer:
+    0, 1, 2
+    2, 3, 0
+    So, this indexBuffer is instructing the gpu which vertices from the vertexBuffer groups in a triangle to be rendered.
+
+And now, i've got a nice rectangle on my view rendered optimized with a index buffer. It's a commit.
+
