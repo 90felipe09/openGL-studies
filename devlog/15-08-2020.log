@@ -1,0 +1,8 @@
+15-08-2020
+Today i'm creating a shader parser.
+
+Basically i'm separating my shaders inside a specific folder and files with shaders code. As long it is just string, i'll program a shader parser to input it inside my source code.
+
+Followed theCherno again, but i've noticed something different. Well, apparently the version supported by my installed specs is the GLES 3.1. It is a little bit different because i have to specify the desired precision for float values in my shaders. Besides that, i can modify the color of the triangle in my screen.
+
+my main.cpp is increasing and i think that i can separate some behaviour in different files, but that is an issue for another day.
