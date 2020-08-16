@@ -1,0 +1,29 @@
+16-08-2020
+
+Today i'm separating the main.cpp in classes. It's too messy already.
+
+First of all, creating the renderer class that will be responsible for the openGL functions calls.
+
+Well. Now that each piece of code has it's own file, i'll have to modify my makefile.
+
+Ok... i can compile each file individually, but there's this problem when linking. There are undefined references to glew and glfw functions. Should i include glew in every file? There's something odd about it because it sounds like that it did find Glew header files but not the lib. So just including the header in every file wouldn't help.
+
+Lol. I just had to change the order of things. I was doing that:
+
+$(CXX) $(CXXFLAGS) $(LIBRARIES) $(LINKER_LIBS) -o $(BUILD_DIR)/$(TARGET) $^
+
+when i should be doing:
+
+$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/$(TARGET) $^ $(LIBRARIES) $(LINKER_LIBS)
+
+Ok. It compiles but it doesn't runs because of some illegal instructions...
+
+Lol, i've made an error of assert types in the index buffer. I would like to stop execution if the GLuint was different of unsigned int type. So instead of this:
+
+ASSERT(sizeof(unsigned int) == sizeof(GLuint));
+
+i did this:
+
+ASSERT(sizeof(unsigned int) != sizeof(GLuint));
+
+Lol. That was the only problem. Now the code is neat. It's a commit

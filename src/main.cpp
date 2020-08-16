@@ -1,7 +1,4 @@
-#define GLEW_NO_GLU
-#define GLEW_STATIC
 #define GLFW_INCLUDE_NONE
-#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <fstream>
@@ -9,27 +6,13 @@
 #include <sstream>
 #include <thread>
 
+// In project files
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+
 #define WINDOW_HEIGHT 800
 #define WINDOW_WIDTH 600
-
-#define ASSERT(x) if(!(x)) __builtin_trap();
-#define GLCall(x) GLClearError();\
-    x;\
-    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-
-static void GLClearError(){
-    // Get all errors. It will iterate till there's no errors in queue
-    while(glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char* function, const char* file, int line){
-    while(GLenum error = glGetError()){
-        std::cout << "[OpenGL Error] (" << error << "):" << function << " " << file
-        << ":" << line << std::endl;
-        return false;
-    }
-    return true;
-}
 
 struct ShaderProgramSource{
     std::string VertexSource;
@@ -145,11 +128,11 @@ int main(){
 
     window = glfwCreateWindow(WINDOW_HEIGHT, WINDOW_WIDTH, "Game Engine", NULL, NULL);
     if (!window){
-        GLCall(glfwTerminate());
+        glfwTerminate();
         return -1;
     }
 
-    GLCall(glfwMakeContextCurrent(window));
+    glfwMakeContextCurrent(window);
 
     glfwSwapInterval(1);
 
@@ -158,59 +141,57 @@ int main(){
     }
 
     std::cout << glGetString(GL_VERSION) << std::endl;
+    {
+        float positions[8] = {
+            -0.5f, -0.5f,   // 0
+             0.5f, -0.5f,   // 1
+             0.5f,  0.5f,   // 2
+            -0.5f,  0.5f    // 3
+        };
 
-    float positions[8] = {
-        -0.5f, -0.5f,   // 0
-         0.5f, -0.5f,   // 1
-         0.5f,  0.5f,   // 2
-        -0.5f,  0.5f    // 3
-    };
+        unsigned int indices[6] = {
+            0, 1, 2,
+            2, 3, 0
+        };
 
-    unsigned int indices[] = {
-        0, 1, 2,
-        2, 3, 0
-    };
+        VertexBuffer vb(positions, 4 * 2 * sizeof(float));
 
-    unsigned int vertexBuffer;
-    GLCall(glGenBuffers(1, &vertexBuffer));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW));
+        GLCall(glEnableVertexAttribArray(0));
+        GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
 
-    GLCall(glEnableVertexAttribArray(0));
-    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
+        IndexBuffer ib(indices, 6);
 
-    unsigned int indexBufferObject;
-    GLCall(glGenBuffers(1, &indexBufferObject));
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject));
-    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(float), indices, GL_STATIC_DRAW));
+        ShaderProgramSource source = ParseShader("../src/res/shaders/Basic.shader");
 
-    ShaderProgramSource source = ParseShader("../src/res/shaders/Basic.shader");
+        unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
+        glUseProgram(shader);
 
-    unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
-    glUseProgram(shader);
+        GLCall(int location = glGetUniformLocation(shader, "u_Color"));
+        ASSERT(location != -1);
 
-    GLCall(int location = glGetUniformLocation(shader, "u_Color"));
-    ASSERT(location != -1);
+        float red = 0.5f;
+        float blue = 0.2f;
+        float green = 0.8f;
 
-    float red = 0.5f;
-    float blue = 0.2f;
-    float green = 0.8f;
+        float redIncrement = 0.002f;
+        float blueIncrement = 0.004f;
+        float greenIncrement = 0.006f;
 
-    float redIncrement = 0.002f;
-    float blueIncrement = 0.004f;
-    float greenIncrement = 0.006f;
+        while(!glfwWindowShouldClose(window)){
+            GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-    while(!glfwWindowShouldClose(window)){
-        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL));
+            GLCall(glUniform4f(location, red, green, blue, 1.0f));
 
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL));
-        GLCall(glUniform4f(location, red, green, blue, 1.0f));
+            changeColor(&red, &blue, &green, &redIncrement, &blueIncrement, &greenIncrement);
 
-        changeColor(&red, &blue, &green, &redIncrement, &blueIncrement, &greenIncrement);
-
-        GLCall(glfwSwapBuffers(window));
-        GLCall(glfwPollEvents());
+            GLCall(glfwSwapBuffers(window));
+            GLCall(glfwPollEvents());
+        }
+        GLCall(glDeleteProgram(shader));
+        
     }
-
+    glfwTerminate();
+    return 0;
 
 }
