@@ -28,3 +28,16 @@ indexBuffer:
 
 And now, i've got a nice rectangle on my view rendered optimized with a index buffer. It's a commit.
 
+Now i'm ending with the errors handling step.
+
+This is very important because there are some type errors that doesn't cause compiling errors or errors log. So we have to mount an error notification. I've seen something similar in a graduation experiment with CUDA that the given code already had some self built error logger. So it looks like heterogenous computation raises this kind of caution.
+
+So we are using glGetError function. It detected an error and return it's error code number. From this we can retrieve the error message. And more, we can use precompiler directives called __LINE__ to specify the line that the error occurred! So this is how error loggers from compilers, interpreters and etc logs these kind of messages!
+
+I'm back. Me and my parents finished watching death note. Today Light left Death Note. Oh, they are so hyped to see what happens next.
+
+Basically created a kind of a decorator with macros that identify the occurence of errors and print the file and the line that the error occured.
+
+And hurray. That worked;
+
+A good commit for today
