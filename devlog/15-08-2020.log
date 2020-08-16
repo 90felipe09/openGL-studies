@@ -41,3 +41,14 @@ Basically created a kind of a decorator with macros that identify the occurence 
 And hurray. That worked;
 
 A good commit for today
+
+Now adding a new and last feature: uniform handling. Uniforms are variables that we can modify from the cpu on shaders processed by GPU. So it means that we can change the color dinamically from fragment shaders or the position of vertices.
+
+To use uniforms in shader, i declare a type that starts with u_ and i get this.
+Now i'm changing the color of the square over time;
+
+Neat!
+
+A nice commit for today.
+
+Now time to sleep. Today was a good day.
