@@ -102,6 +102,40 @@ static int CreateShader(const std::string& vertexShader, const std::string& frag
     return program;
 }
 
+void changeColor(
+    float* red, 
+    float* blue, 
+    float* green, 
+    float* redIncrement,
+    float* blueIncrement,
+    float* greenIncrement
+    ){
+    if(*red > 1.0f){
+        *redIncrement = -0.002f;
+    }
+    else if(*red < 0.0f){
+        *redIncrement = 0.002f;
+    }
+
+    if(*blue > 1.0f){
+        *blueIncrement = -0.004f;
+    }
+    else if(*blue < 0.0f){
+        *blueIncrement = 0.004f;
+    }
+
+    if(*green > 1.0f){
+        *greenIncrement = -0.006f;
+    }
+    else if(*green < 0.0f){
+        *greenIncrement = 0.006f;
+    }
+
+    *red += *redIncrement;
+    *blue += *blueIncrement;
+    *green += *greenIncrement;
+}
+
 int main(){
     GLFWwindow* window;
 
@@ -116,6 +150,8 @@ int main(){
     }
 
     GLCall(glfwMakeContextCurrent(window));
+
+    glfwSwapInterval(1);
 
     if(glewInit() != GLEW_OK){
         std::cout << "Error in glewInit()" << std::endl;
@@ -150,18 +186,27 @@ int main(){
 
     ShaderProgramSource source = ParseShader("../src/res/shaders/Basic.shader");
 
-    std::cout << "VERTEX" << std::endl;
-    std::cout << source.VertexSource << std::endl;
-    std::cout << "FRAGMENT" << std::endl;
-    std::cout << source.FragmentSource << std::endl;
-
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
     glUseProgram(shader);
+
+    GLCall(int location = glGetUniformLocation(shader, "u_Color"));
+    ASSERT(location != -1);
+
+    float red = 0.5f;
+    float blue = 0.2f;
+    float green = 0.8f;
+
+    float redIncrement = 0.002f;
+    float blueIncrement = 0.004f;
+    float greenIncrement = 0.006f;
 
     while(!glfwWindowShouldClose(window)){
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL));
+        GLCall(glUniform4f(location, red, green, blue, 1.0f));
+
+        changeColor(&red, &blue, &green, &redIncrement, &blueIncrement, &greenIncrement);
 
         GLCall(glfwSwapBuffers(window));
         GLCall(glfwPollEvents());
