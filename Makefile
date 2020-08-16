@@ -1,12 +1,37 @@
-LINKER_LIBS := -lglfw3 -lGLEW -ldl -lm -lX11 -lpthread -lGL
-INCLUDES = -Isrc/include/
-LIBRARIES = -L./src/lib
+CXX      	:= -c++
+CXXFLAGS 	:= -pedantic-errors -Wall -Wextra -Werror
+BUILD_DIR   := ./build
+OBJ_DIR  	:= $(BUILD_DIR)/objects
+TARGET   	:= GameEngine
+INCLUDES 	:= -Isrc/include/
+LIBRARIES 	:= -L./src/lib/
+SRC      	:=           		 \
+	$(wildcard src/*.cpp) 		 \
+	
 
-build/GameEngine: build/main.o
-	g++ -o build/GameEngine $(LIBRARIES) build/main.o $(LINKER_LIBS)
-build/main.o: src/main.cpp
-	g++ -std=c++11 -c src/main.cpp $(INCLUDES) -o ./build/main.o
+OBJECTS  := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
+LINKER_LIBS := -lglfw3 -lGLEW -ldl -lm -lX11 -lpthread -lGL
+
+all: build $(BUILD_DIR)/$(TARGET)
+
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIBRARIES) $(LINKER_LIBS) -c $< -o $@
+
+$(BUILD_DIR)/$(TARGET): $(OBJECTS)
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/$(TARGET) $^ $(LIBRARIES) $(LINKER_LIBS)
+
+PHONY: all build clean debug release
+
+build:
+	@mkdir -p $(OBJ_DIR)
+
+debug: CXXFLAGS += -DDEBUG -g
+debug: all
+
+release: CXXFLAGS += -O2
+release: all
 
 clean:
-	rm -rf build/*.o
-	rm -rf build/GameEngine
+	-@rm -rvf $(OBJ_DIR)/*
