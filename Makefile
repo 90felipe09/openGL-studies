@@ -1,5 +1,5 @@
 CXX      	:= -c++
-CXXFLAGS 	:= -pedantic-errors -Wall -Wextra -Werror
+CXXFLAGS 	:= -pedantic-errors -Wall -Wextra
 BUILD_DIR   := ./build
 OBJ_DIR  	:= $(BUILD_DIR)/objects
 TARGET   	:= GameEngine

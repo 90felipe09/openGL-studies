@@ -10,6 +10,7 @@
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "VertexArray.h"
 
 #define WINDOW_HEIGHT 800
 #define WINDOW_WIDTH 600
@@ -126,7 +127,11 @@ int main(){
         return -1;
     }
 
-    window = glfwCreateWindow(WINDOW_HEIGHT, WINDOW_WIDTH, "Game Engine", NULL, NULL);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    window = glfwCreateWindow(WINDOW_HEIGHT, WINDOW_WIDTH, "OpenGL Renderer", NULL, NULL);
     if (!window){
         glfwTerminate();
         return -1;
@@ -154,10 +159,15 @@ int main(){
             2, 3, 0
         };
 
-        VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+        unsigned int vertexArrayObject;
+        GLCall(glGenVertexArrays(1, &vertexArrayObject));
+        GLCall(glBindVertexArray(vertexArrayObject));
 
-        GLCall(glEnableVertexAttribArray(0));
-        GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
+        VertexArray va;
+        VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+        VertexBufferLayout layout;
+        layout.Push<float>(2);
+        va.AddBuffer(vb, layout);
 
         IndexBuffer ib(indices, 6);
 
@@ -177,14 +187,30 @@ int main(){
         float blueIncrement = 0.004f;
         float greenIncrement = 0.006f;
 
+        int counter = 0;
+        int counterLimit = 10;
+        
+        GLCall(glBindVertexArray(0));
+        GLCall(glUseProgram(0));
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
         while(!glfwWindowShouldClose(window)){
             GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL));
+            GLCall(glUseProgram(shader));
+            
             GLCall(glUniform4f(location, red, green, blue, 1.0f));
+            va.Bind();
+            ib.Bind();
 
-            changeColor(&red, &blue, &green, &redIncrement, &blueIncrement, &greenIncrement);
+            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL));
 
+            if (counter == counterLimit){
+                changeColor(&red, &blue, &green, &redIncrement, &blueIncrement, &greenIncrement);
+                counter = 0;
+            }
+            counter += 1;
             GLCall(glfwSwapBuffers(window));
             GLCall(glfwPollEvents());
         }
