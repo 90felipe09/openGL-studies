@@ -35,3 +35,4 @@ release: all
 
 clean:
 	-@rm -rvf $(OBJ_DIR)/*
+	-@rm -rvf $(BUILD_DIR)/*

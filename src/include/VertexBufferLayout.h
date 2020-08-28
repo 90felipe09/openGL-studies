@@ -1,9 +1,6 @@
 #pragma once
 
 #include <vector>
-#define GLEW_NO_GLU
-#define GLEW_STATIC
-#include <GL/glew.h>
 #include "Renderer.h"
 
 struct VertexBufferElement{

@@ -1,0 +1,6 @@
+28-08-2020
+It has been a time that i didn't continue this projetct. I explain. There's another git repository that i was giving attention called https://github.com/90felipe09/OpenCL-Studies. And also i finally had that final test that i was afraid of failing, but now, here i am. Back to the track.
+
+Now i will abstract the shader part in order to take off the shader parsing and shader configuration from the main.cpp. Also i've separated the header files to the /include directory.
+
+It looks really nice now.
