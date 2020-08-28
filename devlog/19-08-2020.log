@@ -1,0 +1,9 @@
+19-08-2020
+I'm back. I've been studying for a final test.
+
+I started watching the game engine series of theCherno and he said something interesting: it's interesting to makea a game engine graphic api agnostic. Something that i'm not doing. I mean, since the beginning i'm compromising this project with openGL.
+
+So if I want to develop a nice game engine it would be interesting to make the components of the game engine modulars and abstract the usage of a renderer in order to use any one, even the openGL.
+
+So now i'm taking another approach for this project by implementing other modules before continuing the 3D renderer.
+

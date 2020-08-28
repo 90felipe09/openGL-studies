@@ -26,4 +26,7 @@ i did this:
 
 ASSERT(sizeof(unsigned int) != sizeof(GLuint));
 
-Lol. That was the only problem. Now the code is neat. It's a commit
+Lol. That was the only problem. Now the code is neat. It's a commit.
+
+Now the next video from theCherno is something about VertexArray abstraction.
+
