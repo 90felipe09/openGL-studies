@@ -13,6 +13,7 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
+#include "Texture.h"
 
 #define WINDOW_HEIGHT 800
 #define WINDOW_WIDTH 600
@@ -78,11 +79,11 @@ int main(){
 
     std::cout << glGetString(GL_VERSION) << std::endl;
     {
-        float positions[8] = {
-            -0.5f, -0.5f,   // 0
-             0.5f, -0.5f,   // 1
-             0.5f,  0.5f,   // 2
-            -0.5f,  0.5f    // 3
+        float positions[] = {
+            -0.5f, -0.5f, 0.0f, 0.0f,   // 0
+             0.5f, -0.5f, 1.0f, 0.0f,   // 1
+             0.5f,  0.5f, 1.0f, 1.0f,   // 2
+            -0.5f,  0.5f, 0.0f, 1.0f    // 3
         };
 
         unsigned int indices[6] = {
@@ -90,9 +91,13 @@ int main(){
             2, 3, 0
         };
 
+        GLCall(glEnable(GL_BLEND));
+        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
         VertexArray va;
-        VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+        VertexBuffer vb(positions, 4 * 4 * sizeof(float));
         VertexBufferLayout layout;
+        layout.Push<float>(2);
         layout.Push<float>(2);
         va.AddBuffer(vb, layout);
 
@@ -113,6 +118,10 @@ int main(){
         int counter = 0;
         int counterLimit = 20;
         
+        Texture texture("../src/res/img/Obama.jpg");
+        texture.Bind();
+        shader.SetUniform1i("u_Texture", 0);
+
         va.Unbind();
         vb.Unbind();
         ib.Unbind();
