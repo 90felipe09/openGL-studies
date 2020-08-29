@@ -9,6 +9,7 @@
 // In project files
 #include "Renderer.h"
 #include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
@@ -110,23 +111,20 @@ int main(){
         float greenIncrement = 0.006f;
 
         int counter = 0;
-        int counterLimit = 10;
+        int counterLimit = 20;
         
         va.Unbind();
         vb.Unbind();
         ib.Unbind();
         shader.Unbind();
 
+        Renderer renderer;
+
         while(!glfwWindowShouldClose(window)){
-            GLCall(glClear(GL_COLOR_BUFFER_BIT));
+            renderer.Clear();
 
-            shader.Bind();
-            
+            renderer.Draw(va, ib, shader);
             shader.SetUniform4f("u_Color", red, green, blue, 1.0f);
-            va.Bind();
-            ib.Bind();
-
-            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL));
 
             if (counter == counterLimit){
                 changeColor(&red, &blue, &green, &redIncrement, &blueIncrement, &greenIncrement);
