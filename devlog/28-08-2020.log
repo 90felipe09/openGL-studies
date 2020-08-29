@@ -8,3 +8,5 @@ It looks really nice now.
 Now i'm following the video of a Basic Renderer from theCherno in order to implement the renderer class. Basically it centralizes the clear and binding methods and clears the main.cpp even more. 
 
 Also, i had to fix some circular references.
+
+Now i've managed to implement texture class and bind it to the shader. I've use a obama photo because i do want to follow towards the obamium meme. Here we go, that's it for today.
