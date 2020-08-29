@@ -4,3 +4,7 @@ It has been a time that i didn't continue this projetct. I explain. There's anot
 Now i will abstract the shader part in order to take off the shader parsing and shader configuration from the main.cpp. Also i've separated the header files to the /include directory.
 
 It looks really nice now.
+
+Now i'm following the video of a Basic Renderer from theCherno in order to implement the renderer class. Basically it centralizes the clear and binding methods and clears the main.cpp even more. 
+
+Also, i had to fix some circular references.
