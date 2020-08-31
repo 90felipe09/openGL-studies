@@ -1,0 +1,31 @@
+30-08-2020
+Let's do the progress of today: understand the blend functions.
+
+GLCall(glEnable(GL_BLEND));
+GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+In the first function we've enabled the usage of a blend function.
+In the second function we are specifying the blend function to use.
+
+Basically, this function receives two arguments: (src, dst). It means the source and destination functions to execute.
+Source is the color that the fragment shader is receiving and destination is the output that the shader must output on the screen.
+
+So generically it's what is happening here for example on red channel:
+
+R = (red_source * src) + (red_destination * dst);
+
+When we use the GL_SRC_ALPHA constant it specifies that the alpha value that the fragment shader is receiving for a given pixel must substitute src value. Also, the GL_ONE_MINUS_SRC_ALPHA is saying that dst must be swapped for 1 - alpha.
+
+Now i'm entering the field of camera projection. As i've seen, working with computer graphics consists in reality moving the world to the camera instead of moving the camera through the world in order to facilitate the maths by thinking the camera as a 0 position.
+
+In order to correctly projects the 3D data of our world on the screen we must think about projection maths. It's, we must use a projection matrix that will multiply the position vector of our data and correctly project it on our screen.
+
+So what happens here is that our vertex shader, the one that is responsible for specifying spacial positions for our rendering of the mesh vertices, to appropriatelly project a position data on the screen, will multiply these values towards a 4x4 matrix.
+
+So... basically:
+
+Imagine that a position vector is a matrix of dimentions 4x1. A projection matrix consists of a 4x4 matrix. So we can perform a multiplication beetwen those matrices in order to obtain a new projected position vertex. But in order to perform this multiplication, we must transpose this position vector to make it a 1x4 matrix and then perform the multiplication. It's important because it's with it that we can perform the appropriate aspect ratio projection or simulate diffent kinds of lenses (perspective or ortographically for example).
+
+The suggestion that TheCherno give in his video is to use a header lib (not a lib because it's just some header files) from an OS repository that implements the maths specific for openGL. He warns us that if we are using other graphics api such as directX, we should be able to adapt our math results for that api. The repository that he suggest using is this one: (https://github.com/Groovounet/glm).
+
+So basically i'll need to add a function in the Shader class that receives a matrix as an input to an uniform, change my vertex shader to multiply this uniform with the position vertices vector and also include this header to help us with this task and future tasks.

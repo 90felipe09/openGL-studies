@@ -6,6 +6,9 @@
 #include <sstream>
 #include <thread>
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 // In project files
 #include "Renderer.h"
 #include "VertexBuffer.h"
@@ -103,9 +106,21 @@ int main(){
 
         IndexBuffer ib(indices, 6);
 
+        float zoomMagnitude = 1.0f;
+        float aspectRatio = WINDOW_HEIGHT/WINDOW_WIDTH;
+        float baseLimit = 1.5f;
+        glm::mat4 proj = glm::ortho(
+            -1 * baseLimit * aspectRatio * zoomMagnitude,
+             baseLimit * aspectRatio * zoomMagnitude,
+            -1 * baseLimit * zoomMagnitude,
+             baseLimit * zoomMagnitude,
+            -1.0f * zoomMagnitude,
+             1.0f * zoomMagnitude);
+
         Shader shader("../src/res/shaders/Basic.shader");
         shader.Bind();
         shader.SetUniform4f("u_Color", 0, 0, 0, 1.0f);
+        shader.SetUniform4mat("u_MVP", proj);
 
         float red = 0.5f;
         float blue = 0.2f;
@@ -128,7 +143,8 @@ int main(){
         shader.Unbind();
 
         Renderer renderer;
-
+        
+        float zoomIncrement = 0.01f;
         while(!glfwWindowShouldClose(window)){
             renderer.Clear();
 
@@ -136,7 +152,22 @@ int main(){
             shader.SetUniform4f("u_Color", red, green, blue, 1.0f);
 
             if (counter == counterLimit){
-                changeColor(&red, &blue, &green, &redIncrement, &blueIncrement, &greenIncrement);
+                // changeColor(&red, &blue, &green, &redIncrement, &blueIncrement, &greenIncrement);
+                if (zoomMagnitude >= 1.5f){
+                    zoomIncrement = -0.01f;
+                }
+                if (zoomMagnitude <= 0.5f){
+                    zoomIncrement = 0.01f;
+                }
+                zoomMagnitude += zoomIncrement;
+                proj = glm::ortho(
+                    -1 * baseLimit * aspectRatio * zoomMagnitude,
+                    baseLimit * aspectRatio * zoomMagnitude,
+                    -1 * baseLimit * zoomMagnitude,
+                    baseLimit * zoomMagnitude,
+                    -1.0f * zoomMagnitude,
+                    1.0f * zoomMagnitude);
+                shader.SetUniform4mat("u_MVP", proj);
                 counter = 0;
             }
             counter += 1;
